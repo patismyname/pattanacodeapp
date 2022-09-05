@@ -7,6 +7,11 @@ import com.pattanacode.services.ProductService;
 import com.pattanacode.utils.DateTimeBase;
 import com.pattanacode.utils.DateTimeUtils;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,15 +19,19 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import static io.swagger.v3.oas.annotations.enums.ParameterIn.HEADER;
 
 import java.util.List;
 import java.util.Optional;
 
 //@CrossOrigin(origins = "*", maxAge = 3600)
+@Tag(name = "Product", description = "Operations related to Product Controller ")
 @RestController
-@RequestMapping("/api/v1")
+@RequestMapping("/api/product/v1")
 public class ProductController {
 
 	private final static Logger logger = LoggerFactory.getLogger(ProductController.class);
@@ -33,6 +42,10 @@ public class ProductController {
 
 
 	//@SuppressWarnings("null")
+	//@PreAuthorize("hasRole('ADMIN')")
+    @Operation(summary = "Create a new dentist",
+            parameters = @Parameter(name = "Authorization", in = HEADER, description = "JWT token required", required = true),
+            security = @SecurityRequirement(name = "bearerAuth"))
 	@GetMapping({"/{productId}", "/product", ""})
     public ResponseEntity<Page<Product>> getProduct(
             @PathVariable(required = false) Optional<String> productId,
@@ -60,11 +73,13 @@ public class ProductController {
 	
 	
 
-    @RequestMapping(method=RequestMethod.POST, value="/product")
-    public ResponseEntity<String> saveProduct(Product product, @RequestParam("file") MultipartFile multipartFile) throws Exception {
+   // @RequestMapping(method=RequestMethod.POST, value="/create")
+    @PostMapping({"", "/"})
+    public ResponseEntity<String> saveProduct(Product product, @RequestParam("fileLogo") MultipartFile fileLogo,
+    		@RequestParam("fileImage") MultipartFile fileImage,@RequestParam("fileVdo") MultipartFile fileVdo) throws Exception {
 
-    	logger.info("before getProductStartDate="+product.getProductStartDate());
-    	logger.info("before getProductEndDate="+product.getProductEndDate());
+    	//logger.info("before getProductStartDate="+product.getProductStartDate());
+    	//logger.info("before getProductEndDate="+product.getProductEndDate());
     	
     	 if (product.getProductEndDate().compareTo(product.getProductStartDate()) < 0) {
              logger.info("-startDate- is not before -endDate-");
@@ -74,10 +89,10 @@ public class ProductController {
     	product.setProductStartDate(DateTimeUtils.getUTCTime(product.getProductStartDate()));
     	product.setProductEndDate(DateTimeUtils.getUTCTime(product.getProductEndDate()));
     	
-    	logger.info("after getProductStartDate="+product.getProductStartDate());
-    	logger.info("after getProductEndDate="+product.getProductEndDate());
+    	//logger.info("after getProductStartDate="+product.getProductStartDate());
+    	//logger.info("after getProductEndDate="+product.getProductEndDate());
         
-    	  Optional<Product> optional = productService.saveProduct(product, multipartFile);
+    	  Optional<Product> optional = productService.saveProduct(product, fileLogo,fileImage,fileVdo);
         
         if (optional.isPresent()) {
             logger.info("Success create Product with Id: " + optional.get().getProductId());

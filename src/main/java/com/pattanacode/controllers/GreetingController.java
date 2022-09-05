@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.pattanacode.dto.GreetingDto;
 import com.pattanacode.services.GreetingMakerService;
 
 
@@ -21,7 +22,7 @@ import com.pattanacode.services.GreetingMakerService;
  *
  */
 @RestController
-@RequestMapping("/api/v1")
+@RequestMapping("/api/greeting/v1")
 public class GreetingController {
 	
 	private final static Logger logger = LoggerFactory.getLogger(GreetingController.class);
@@ -31,13 +32,14 @@ public class GreetingController {
 	private GreetingMakerService greetingMakerService;
 	
 	
-	 @GetMapping({"/greeting/", "/greeting"})
-	public ResponseEntity<String> getGreeting(@RequestParam(required = false, defaultValue = "Th", value = "strLanguageCode") String strLanguageCode) throws Exception{
-		String strGreeting="";
-		strGreeting=greetingMakerService.getGreetingLanguage(strLanguageCode);
+	 @GetMapping({"/say", ""})
+	public ResponseEntity<GreetingDto> getGreeting(@RequestParam(required = false, defaultValue = "Th", value = "strLanguageCode") String strLanguageCode) throws Exception{
+		//String strGreeting="";
+		GreetingDto greetingDto=new GreetingDto(); 
+		greetingDto=greetingMakerService.getGreetingLanguage(strLanguageCode);
 		
 		  logger.info("Get Promotions successfully");
-	        return ResponseEntity.status(HttpStatus.OK).body(strGreeting);
+	        return ResponseEntity.status(HttpStatus.OK).body(greetingDto);
 		
 	}
 

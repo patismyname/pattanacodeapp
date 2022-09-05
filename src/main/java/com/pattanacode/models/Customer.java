@@ -10,34 +10,55 @@ public class Customer {
 
     @Id
     private  String customerId;
-    private  String lineId;
+    private  String email;
     private  String firstName;
-    private String middleName;
+    private  String middleName;
     private  String lastName;
     private  String nickName;
-    private Date birthDate;
+    private  Date birthDate;
     private  String mobileNumber;
-    private String customerType;
-    private String statusFlag;
-    private String createdBy;
-    private Date createdDate;
+    private  String customerType;
+    private  String statusFlag;//A,I
+    private  String createdBy;
+    private  Date createdDate;
     private  Date updatedDate;
     
     public Customer(){
     	
     }
-    public  Customer(String lineId,String firstName,String lastName,String nickName, String mobileNumber){
-        this.lineId=lineId;
+    public  Customer(String firstName,String lastName,String nickName, 
+    		Date birthDate,String email,String mobileNumber,
+    		String customerType, String statusFlag,
+    		Date createdDate,
+  		   String createdBy){
+       
         this.firstName=firstName;
         this.lastName=lastName;
         this.nickName=nickName;
+        this.birthDate=birthDate;
+        this.email=email;
         this.mobileNumber=mobileNumber;
+        this.customerType=customerType;
+        this.statusFlag=statusFlag;
+        this.createdDate=createdDate;
+        this.createdBy=createdBy;
+        
     }
 
-    
-  
 
     /**
+	 * @return the email
+	 */
+	public String getEmail() {
+		return email;
+	}
+	/**
+	 * @param email the email to set
+	 */
+	public void setEmail(String email) {
+		this.email = email;
+	}
+	/**
 	 * @return the customerId
 	 */
 	public String getCustomerId() {
@@ -49,18 +70,7 @@ public class Customer {
 	public void setCustomerId(String customerId) {
 		this.customerId = customerId;
 	}
-	/**
-	 * @return the lineId
-	 */
-	public String getLineId() {
-		return lineId;
-	}
-	/**
-	 * @param lineId the lineId to set
-	 */
-	public void setLineId(String lineId) {
-		this.lineId = lineId;
-	}
+	
 	/**
 	 * @return the middleName
 	 */

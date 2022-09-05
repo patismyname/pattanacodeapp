@@ -1,6 +1,7 @@
 package com.pattanacode.models;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -18,37 +19,90 @@ public class Product {
 	@Id
 	@GeneratedValue(strategy =  GenerationType.IDENTITY)
     private String productId;
-	
 	private String productCode;
 	private String productName;
+	private String productTopic;
 	private String productDesc;
 	private Double productPrice;
 	private Date productStartDate;
 	private Date productEndDate;
-	private String fileId;
-	private String productType;
+	private String fileLogoId;
+	private String fileImageId;
+	private String fileVdoId;
+	@DBRef
+	private Category category;
+	
+	private String categoryName;
+	
+	
 	private String statusType;
 	private Date createdDate;
 	private Date updatedDate;
 	private String createdBy;
 	private String updatedBy;
-	private MultipartFile multipartFile;
+	//private MultipartFile multipartFile;
 	
 	public Product() {
 		this.productCode="";
 		this.productName="";
 		this.productDesc="";
 		this.productPrice=0.00;
-		this.fileId="";
-		this.productType="";
+		this.fileLogoId="";
+		this.fileImageId="";
+		this.fileVdoId="";
 		this.statusType="";
-		this.createdDate=new Date();
-		this.updatedDate=new Date();
+		this.categoryName="";
+		//this.createdDate=new Date();
+		//this.updatedDate=new Date();
 	}
 	
 
 	
 	
+
+	/**
+	 * @return the productTopic
+	 */
+	public String getProductTopic() {
+		return productTopic;
+	}
+
+
+
+
+
+	/**
+	 * @param productTopic the productTopic to set
+	 */
+	public void setProductTopic(String productTopic) {
+		this.productTopic = productTopic;
+	}
+
+
+
+
+
+	/**
+	 * @return the category
+	 */
+	public Category getCategory() {
+		return category;
+	}
+
+
+
+
+
+	/**
+	 * @param category the category to set
+	 */
+	public void setCategory(Category category) {
+		this.category = category;
+	}
+
+
+
+
 
 	/**
 	 * @return the productId
@@ -68,26 +122,6 @@ public class Product {
 		this.productId = productId;
 	}
 
-
-
-
-
-	/**
-	 * @return the multipartFile
-	 */
-	public MultipartFile getMultipartFile() {
-		return multipartFile;
-	}
-
-
-
-
-	/**
-	 * @param multipartFile the multipartFile to set
-	 */
-	public void setMultipartFile(MultipartFile multipartFile) {
-		this.multipartFile = multipartFile;
-	}
 
 
 
@@ -177,37 +211,72 @@ public class Product {
 
 	
 
-	/**
-	 * @return the fileId
-	 */
-	public String getFileId() {
-		return fileId;
-	}
 
 
 
 	/**
-	 * @param fileId the fileId to set
+	 * @return the fileLogoId
 	 */
-	public void setFileId(String fileId) {
-		this.fileId = fileId;
+	public String getFileLogoId() {
+		return fileLogoId;
 	}
+
+
 
 
 
 	/**
-	 * @return the productType
+	 * @param fileLogoId the fileLogoId to set
 	 */
-	public String getProductType() {
-		return productType;
+	public void setFileLogoId(String fileLogoId) {
+		this.fileLogoId = fileLogoId;
 	}
 
+
+
+
+
 	/**
-	 * @param productType the productType to set
+	 * @return the fileImageId
 	 */
-	public void setProductType(String productType) {
-		this.productType = productType;
+	public String getFileImageId() {
+		return fileImageId;
 	}
+
+
+
+
+
+	/**
+	 * @param fileImageId the fileImageId to set
+	 */
+	public void setFileImageId(String fileImageId) {
+		this.fileImageId = fileImageId;
+	}
+
+
+
+
+
+	/**
+	 * @return the fileVdoId
+	 */
+	public String getFileVdoId() {
+		return fileVdoId;
+	}
+
+
+
+
+
+	/**
+	 * @param fileVdoId the fileVdoId to set
+	 */
+	public void setFileVdoId(String fileVdoId) {
+		this.fileVdoId = fileVdoId;
+	}
+
+
 
 	/**
 	 * @return the statusType
@@ -285,6 +354,28 @@ public class Product {
 	 */
 	public void setUpdatedBy(String updatedBy) {
 		this.updatedBy = updatedBy;
+	}
+
+
+
+
+
+	/**
+	 * @return the categoryName
+	 */
+	public String getCategoryName() {
+		return categoryName;
+	}
+
+
+
+
+
+	/**
+	 * @param categoryName the categoryName to set
+	 */
+	public void setCategoryName(String categoryName) {
+		this.categoryName = categoryName;
 	}
 	
 

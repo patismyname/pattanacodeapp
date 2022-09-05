@@ -4,6 +4,10 @@ import java.util.Date;
 import java.util.Set;
 
 import javax.validation.constraints.*;
+
+import com.pattanacode.models.ERole;
+import com.pattanacode.models.Role;
+import com.pattanacode.utils.DateTimeUtils;
  
 public class SignupRequest {
 	
@@ -26,6 +30,8 @@ public class SignupRequest {
     
     private String pinCode;
     
+    private String passwordType;
+    
     
     //@NotBlank
     @Size(max = 250)
@@ -39,9 +45,12 @@ public class SignupRequest {
     @Size(max = 250)
     private String lastName;
     
+    @Size(max = 250)
+    private String nickName;
+    
    
     @Size(max = 3)
-    private String countryCode;
+    private String countryCode;// Thailand is 066
     
    // @NotBlank
     @Size(max = 10)
@@ -51,7 +60,11 @@ public class SignupRequest {
     
     private Date expiredDate;
     
-  
+    private Date birthDate;
+    
+    private String customerType;// S is Student
+                                // T is Teacher
+                                // C is Customer
     
     private String flagStatus;
   
@@ -108,6 +121,22 @@ public class SignupRequest {
 	public void setPinCode(String pinCode) {
 		this.pinCode = pinCode;
 	}
+	
+	
+
+	/**
+	 * @return the passwordType
+	 */
+	public String getPasswordType() {
+		return passwordType;
+	}
+
+	/**
+	 * @param passwordType the passwordType to set
+	 */
+	public void setPasswordType(String passwordType) {
+		this.passwordType = passwordType;
+	}
 
 	/**
 	 * @return the firstName
@@ -151,6 +180,21 @@ public class SignupRequest {
 		this.lastName = lastName;
 	}
 
+	
+	/**
+	 * @return the nickName
+	 */
+	public String getNickName() {
+		return nickName;
+	}
+
+	/**
+	 * @param nickName the nickName to set
+	 */
+	public void setNickName(String nickName) {
+		this.nickName = nickName;
+	}
+
 	/**
 	 * @return the countryCode
 	 */
@@ -162,7 +206,11 @@ public class SignupRequest {
 	 * @param countryCode the countryCode to set
 	 */
 	public void setCountryCode(String countryCode) {
-		this.countryCode = countryCode;
+		if(countryCode!=null)
+		  this.countryCode = countryCode;
+		else {
+			this.countryCode="066";
+		}
 	}
 
 	/**
@@ -184,7 +232,17 @@ public class SignupRequest {
     }
     
     public void setRole(Set<String> roles) {
-      this.roles = roles;
+    	
+      Set<String> set = Set.<String>of("user");
+      
+      if(roles!=null)
+       this.roles = roles;
+      else {
+    	  this.roles =set;
+	}
+      
+      
+    
     }
 
 	/**
@@ -198,7 +256,11 @@ public class SignupRequest {
 	 * @param startDate the startDate to set
 	 */
 	public void setStartDate(Date startDate) {
+		if(startDate!=null)
 		this.startDate = startDate;
+		else {
+			this.startDate=DateTimeUtils.getSystemDate();
+		}
 	}
 
 	/**
@@ -212,7 +274,27 @@ public class SignupRequest {
 	 * @param expiredDate the expiredDate to set
 	 */
 	public void setExpiredDate(Date expiredDate) {
+		if(expiredDate!=null)
 		this.expiredDate = expiredDate;
+		else {
+			this.expiredDate=DateTimeUtils.getExpirationDate();
+		}
+	}
+	
+	
+
+	/**
+	 * @return the birthDate
+	 */
+	public Date getBirthDate() {
+		return birthDate;
+	}
+
+	/**
+	 * @param birthDate the birthDate to set
+	 */
+	public void setBirthDate(Date birthDate) {
+		this.birthDate = birthDate;
 	}
 
 	/**
@@ -229,11 +311,30 @@ public class SignupRequest {
 		return flagStatus;
 	}
 
+	
+	/**
+	 * @return the customerType
+	 */
+	public String getCustomerType() {
+		return customerType;
+	}
+
+	/**
+	 * @param customerType the customerType to set
+	 */
+	public void setCustomerType(String customerType) {
+		this.customerType = customerType;
+	}
+
 	/**
 	 * @param flagStatus the flagStatus to set
 	 */
 	public void setFlagStatus(String flagStatus) {
+		if(flagStatus!=null)
 		this.flagStatus = flagStatus;
+		else {
+			this.flagStatus="A";
+		}
 	}
     
 	

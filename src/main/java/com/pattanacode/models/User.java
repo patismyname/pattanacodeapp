@@ -36,6 +36,9 @@ public class User {
   
   private String pincode;
   
+  @NotBlank
+  private String passwordType;// P used is Password, C used is PinCode
+  
   
   private Date startDate;
   
@@ -66,6 +69,7 @@ public class User {
 		  String email, 
 		  String password,
 		  String pincode,
+		  String passwordType,
 		  Date startDate,
 		  Date expiredDate,
 		  String flagStatus,
@@ -76,6 +80,7 @@ public class User {
     this.email = email;
     this.password = password;
     this.pincode=pincode;
+    this.passwordType=passwordType;
     this.startDate=startDate;
     this.expiredDate=expiredDate;
     this.flagStatus=flagStatus;
@@ -86,7 +91,9 @@ public class User {
 
 
 
-  public User() {
+  public User(
+		  ) {
+	  
 	// TODO Auto-generated constructor stub
 }
 
@@ -176,6 +183,28 @@ public String getPincode() {
  */
 public void setPincode(String pincode) {
 	this.pincode = pincode;
+}
+
+
+
+/**
+ * @return the passwordType
+ */
+public String getPasswordType() {
+	return passwordType;
+}
+
+
+
+/**
+ * @param passwordType the passwordType to set
+ */
+public void setPasswordType(String passwordType) {
+	if(passwordType!=null)
+	this.passwordType = passwordType;
+	else {
+		this.passwordType="P";
+	}
 }
 
 

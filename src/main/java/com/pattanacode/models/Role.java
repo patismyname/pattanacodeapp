@@ -35,6 +35,11 @@ public class Role {
   }
 
   public void setName(ERole name) {
+	if(name!=null)  
     this.name = name;
+	else {
+		this.name=ERole.ROLE_USER;
+		
+	}
   }
 }

@@ -13,8 +13,8 @@ import com.pattanacode.services.UserDetailsImpl;
 import io.jsonwebtoken.*;
 
 @Component
-public class JwtUtils {
-	private static final Logger logger = LoggerFactory.getLogger(JwtUtils.class);
+public class JwtTokenProvider {
+	private static final Logger logger = LoggerFactory.getLogger(JwtTokenProvider.class);
 
 	@Value("${app.jwtSecret}")
 	private String jwtSecret;

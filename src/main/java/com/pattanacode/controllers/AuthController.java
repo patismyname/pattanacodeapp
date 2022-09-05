@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import javax.validation.Valid;
@@ -13,8 +14,10 @@ import javax.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 //import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -30,6 +33,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.pattanacode.models.Customer;
 import com.pattanacode.models.ERole;
 import com.pattanacode.models.Role;
 import com.pattanacode.models.User;
@@ -38,15 +43,23 @@ import com.pattanacode.payload.request.SignupRequest;
 import com.pattanacode.payload.response.JwtResponse;
 import com.pattanacode.payload.response.MessageResponse;
 import com.pattanacode.payload.response.ModelResponse;
+import com.pattanacode.repository.CustomerRepository;
 import com.pattanacode.repository.RoleRepository;
 import com.pattanacode.repository.UserRepository;
-import com.pattanacode.security.jwt.JwtUtils;
+import com.pattanacode.security.jwt.JwtTokenProvider;
 import com.pattanacode.services.UserDetailsImpl;
+import com.pattanacode.utils.CorrelationInterceptor;
+import com.pattanacode.utils.DateTimeUtils;
+import com.pattanacode.utils.RequestCorrelation;
 import com.pattanacode.utils.Utility;
 
-@CrossOrigin(origins = "*", maxAge = 3600)
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
+@Tag(name = "Users", description = "Operations related to users")
+//@CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
-@RequestMapping("/api/v1/auth")
+@RequestMapping("/api/auth/v1")
 public class AuthController {
 	private final static Logger logger = LoggerFactory.getLogger(AuthController.class);
 
@@ -56,6 +69,9 @@ public class AuthController {
 
 	@Autowired
 	UserRepository userRepository;
+	
+	@Autowired
+	CustomerRepository customerRepository;
 
 	@Autowired
 	RoleRepository roleRepository;
@@ -64,9 +80,13 @@ public class AuthController {
 	PasswordEncoder encoder;
 
 	@Autowired
-	JwtUtils jwtUtils;
+	JwtTokenProvider jwtUtils;
 
-	@PostMapping("/login")
+	
+	//@PostMapping("/login")
+   @Operation(summary = "Login the user into the api")
+ // @PostMapping("/login")
+    @RequestMapping(value = "/login", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
 
 		logger.info("username:"+loginRequest.getUsername()+" password:"+loginRequest.getPassword());
@@ -108,6 +128,7 @@ public class AuthController {
 		return ResponseEntity.ok(jwtResponse);
 	}
 
+    @Operation(summary = "Create a new user by email address")
 	@PostMapping("/register")
 	public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
 		
@@ -118,10 +139,15 @@ public class AuthController {
 		 * MessageResponse(signUpRequest.getUsername()
 		 * ,"Error: Username is already taken!")); }//if
 		 */
+    	String correlationId  = RequestCorrelation.getCorrelationId();
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.set(RequestCorrelation.CORRELATION_ID, correlationId);
+        
 		if (userRepository.existsByEmail(signUpRequest.getEmail())) {
+			logger.info("correlationId:"+correlationId);
 			return ResponseEntity
 					.badRequest()
-					.body(new MessageResponse(signUpRequest.getEmail(),"Error: Username Email is already in use!"));
+					.body(new MessageResponse(correlationId, signUpRequest.getEmail(),"Error: This Email is already in used!"));
 		}//if
 
 		// Create new user's account
@@ -129,12 +155,25 @@ public class AuthController {
 		User user = new User(signUpRequest.getEmail(), 
 							 signUpRequest.getEmail(),
 							 encoder.encode(signUpRequest.getPassword()),
-							 signUpRequest.getPinCode(),
-							 signUpRequest.getStartDate(),
-							 signUpRequest.getExpiredDate(),
+							 encoder.encode(signUpRequest.getPinCode()),
+							 signUpRequest.getPasswordType(),
+							 DateTimeUtils.getSystemDate(),
+							 DateTimeUtils.getExpirationDate(),
 							 signUpRequest.getFlagStatus(),
-							 new Date(),
+							 DateTimeUtils.getSystemDate(),
 							 "System");
+		//customer
+		Customer customer=new Customer(signUpRequest.getFirstName(),
+				signUpRequest.getLastName(),
+				signUpRequest.getNickName(),
+				signUpRequest.getBirthDate(),
+				signUpRequest.getEmail(),
+				signUpRequest.getMobileNumber(),
+				signUpRequest.getCustomerType(),
+				signUpRequest.getFlagStatus(),
+				DateTimeUtils.getSystemDate(),
+				 "System"
+				);
 
 		Set<String> strRoles = signUpRequest.getRoles();
 		Set<Role> roles = new HashSet<>();
@@ -170,11 +209,18 @@ public class AuthController {
 		}
 
 		user.setRoles(roles);
+		
+		customerRepository.save(customer);
+		
 		userRepository.save(user);
 
-		return ResponseEntity.ok(new MessageResponse(signUpRequest.getEmail(), " Registered success."));
+		return ResponseEntity.ok(new MessageResponse(RequestCorrelation.getCorrelationId(),signUpRequest.getEmail(), " Registered success."));
 	}//end method POSt
 	
+    
+ 
+    
+    @Operation(summary = "Update the user into the api")
 	//@PutMapping("/register")
 	@RequestMapping(method=RequestMethod.PUT, value="/register")
 	public ResponseEntity<?> updateUser(@Valid @RequestBody SignupRequest signUpRequest) {
@@ -226,9 +272,10 @@ public class AuthController {
 		user.setRoles(roles);
 		userRepository.save(user);
 
-		return ResponseEntity.ok(new MessageResponse(signUpRequest.getUsername(),"  Registered success."));
+		return ResponseEntity.ok(new MessageResponse(RequestCorrelation.getCorrelationId(),signUpRequest.getUsername(),"  Registered success."));
 	}//end method PUT
 	
+    @Operation(summary = "Register Flag Status the user into the api")
 	@PatchMapping("/registerFlagStatus/{id}")
 	public ResponseEntity<?> updateFlagStatusUser(@PathVariable (value = "id") String id) {
 	
@@ -245,20 +292,21 @@ public class AuthController {
 		userDetails.setCreatedDate(new Date());
 		userRepository.save(userDetails);
 
-		return ResponseEntity.ok(new MessageResponse(id," is updated Flag Status User successfully."));
+		return ResponseEntity.ok(new MessageResponse(RequestCorrelation.getCorrelationId(),id," is updated Flag Status User successfully."));
 	}//end method Put to PATCH
 	
 	
 	//@RequestMapping(method=RequestMethod.DELETE, value="/register")
+    @Operation(summary = "Delete the user into the api")
 	@DeleteMapping("/register/{id}")
 	public ResponseEntity<?> deleteUser(@PathVariable (value = "id") String id) {
 	
 		//User user =new User();
-		logger.info("id="+id);
+		logger.info("deleteUser id="+id);
 		//user.setId(id);
 		userRepository.deleteById(id);
 
-		return ResponseEntity.ok(new MessageResponse(id," is deleted successfully."));
+		return ResponseEntity.ok(new MessageResponse(RequestCorrelation.getCorrelationId(),id," is deleted successfully."));
 	}//end method Delete
 	
 }//end class

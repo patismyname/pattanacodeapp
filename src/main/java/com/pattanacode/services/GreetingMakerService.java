@@ -7,6 +7,8 @@ import java.util.GregorianCalendar;
 
 import org.springframework.stereotype.Service;
 
+import com.pattanacode.dto.GreetingDto;
+
 /**
  * @author patismyname
  *
@@ -26,14 +28,17 @@ public class GreetingMakerService {
 	 * @param strLanguageCode En=English Language Th=Thai Language
 	 * @return
 	 */
-	public String getGreetingLanguage(String strLanguageCode) { // or return String in your case
+	public GreetingDto getGreetingLanguage(String strLanguageCode) { // or return String in your case
 		String strGreetingLanguage = "";
+		GreetingDto greetingDto=new GreetingDto();
 		if (strLanguageCode != null && strLanguageCode.equalsIgnoreCase("Th")) {
 			strGreetingLanguage = getGreetingTh();
+			greetingDto.setSayGreeting(strGreetingLanguage);
 		} else {
 			strGreetingLanguage = getGreetingEn();
+			greetingDto.setSayGreeting(strGreetingLanguage);
 		}
-		return strGreetingLanguage;
+		return greetingDto;
 	}// end method
 
 	public static String getGreetingEn() {

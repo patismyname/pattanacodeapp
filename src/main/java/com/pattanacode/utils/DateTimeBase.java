@@ -38,7 +38,7 @@ public abstract class DateTimeBase {
     public static int MONTHDIFF = 0;
     public static int YEARDIFF = 0;
     public static final String[] LONG_MONTHNAMES_EN = {"January", "February", "March", "Apil", "May", "June", "July", "August", "September", "October", "November", "December"};
-    public static final String[] LONG_MONTHNAMES_TH = {"¡°√“§¡", "°ÿ¡¿“æ—π∏Ï", "¡’π“§¡", "‡¡…“¬π", "æƒ…¿“§¡", "¡‘∂ÿπ“¬π", "°√°Æ“§¡", " ‘ßÀ“§¡", "°—π¬“¬π", "µÿ≈“§¡", "æƒ»®‘°“¬π", "∏—π«“§¡"};
+    public static final String[] LONG_MONTHNAMES_TH = {"มกราคม", "กุมภาพันธ์", "¡’π“§¡", "‡¡…“¬π", "æƒ…¿“§¡", "¡‘∂ÿπ“¬π", "°√°Æ“§¡", " ‘ßÀ“§¡", "°—π¬“¬π", "µÿ≈“§¡", "æƒ»®‘°“¬π", "∏—π«“§¡"};
 
     private String strDatabasType;
 
@@ -706,31 +706,28 @@ public abstract class DateTimeBase {
         this.strDatabasType = strDatabasType;
     }
 
-    public static void main(String args[]) {
-        try {
-            Date startDate = new Date();
-
-            String strStartDate = DateTimeBase.getStrDateEN(startDate);
-            /// String strDateAdd=DateTimeBase.getDateAdd(currentDate,10,0,0);
-            System.out.println("strStartDate=" + strStartDate);
-            String strDateEndFromSystem = "2021-09-27";
-            Long longDateDiff = DateTimeBase.getDateDiff(strDateEndFromSystem, strStartDate, "-");
-            System.out.println("longDateDiff=" + longDateDiff);
-
-            longDateDiff = DateTimeBase.getDateDiff(strDateEndFromSystem, strStartDate, "-");
-
-            System.out.println("longDateDiff=" + longDateDiff);
-            if (longDateDiff < 0) {
-                System.out.println("Period has been frozen.");
-
-            }//if
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-    }
-
+	/*
+	 * public static void main(String args[]) { try { Date startDate = new Date();
+	 * 
+	 * String strStartDate = DateTimeBase.getStrDateEN(startDate); /// String
+	 * strDateAdd=DateTimeBase.getDateAdd(currentDate,10,0,0);
+	 * System.out.println("strStartDate=" + strStartDate); String
+	 * strDateEndFromSystem = "2021-09-27"; Long longDateDiff =
+	 * DateTimeBase.getDateDiff(strDateEndFromSystem, strStartDate, "-");
+	 * System.out.println("longDateDiff=" + longDateDiff);
+	 * 
+	 * longDateDiff = DateTimeBase.getDateDiff(strDateEndFromSystem, strStartDate,
+	 * "-");
+	 * 
+	 * System.out.println("longDateDiff=" + longDateDiff); if (longDateDiff < 0) {
+	 * System.out.println("Period has been frozen.");
+	 * 
+	 * }//if
+	 * 
+	 * } catch (Exception e) { e.printStackTrace(); }
+	 * 
+	 * }
+	 */
 }//end class
 
 

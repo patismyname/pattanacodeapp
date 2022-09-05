@@ -17,6 +17,18 @@ public class DateTimeUtils {
 		utc.setTime(date);
 		utc.set(Calendar.HOUR_OF_DAY, 7);
 		return utc.getTime();
+	}//
+	
+	public static Date getExpirationDate() {
+	    Date date = new Date();
+	    Calendar cal = Calendar.getInstance();
+	    cal.setTime(date);
+	    cal.add(Calendar.YEAR, 1);
+
+	            java.util.Date expirationDate = cal.getTime();
+
+	    System.err.println(expirationDate);
+	    return expirationDate;
 	}
 	
     public static String dateToString(Date date, String pattern) {
